@@ -22,8 +22,8 @@ public class SwingClient {
 
     TopicManager topicManager;
     public Map<Topic, Subscriber> my_subscriptions;
-    public Map<Topic, Publisher> my_publishers; // Store publishers for multiple topics
-    Topic publisherTopic;                // Currently selected topic for publishing
+    public Map<Topic, Publisher> my_publishers;
+    Topic publisherTopic;               
 
     JFrame frame;
     JTextArea topic_list_TextArea;
@@ -213,11 +213,13 @@ public class SwingClient {
     class newSubscriberHandler implements ActionListener {
 
         public void actionPerformed(ActionEvent e) {
+            new showTopicsHandler().actionPerformed(null);
+            
             String topicName = argument_TextField.getText().trim();
             Topic topic = new Topic(topicName);
             Subscriber subscriber = new SubscriberImpl(SwingClient.this);
             Subscription_check result = topicManager.subscribe(topic, subscriber);
-            System.out.print(my_subscriptions);
+            
             if (result.result == Subscription_check.Result.OKAY) {
                 if (my_subscriptions.containsKey(topic)) {
                     info_TextArea.append("Already subcribed to topic: " + topicName + "\n");
