@@ -14,6 +14,7 @@ import java.util.Map;
 import publisher.Publisher;
 import subscriber.Subscriber;
 import topicmanager.TopicManager;
+import topicmanager.TopicManagerStub;
 import util.Subscription_close;
 import util.Topic_check;
 
@@ -40,8 +41,9 @@ public class SwingClient {
     }
 
     public void createAndShowGUI() {
-
-        frame = new JFrame("Publisher/Subscriber Demo");
+        
+        String user = ((TopicManagerStub)topicManager).user;
+        frame = new JFrame("Publisher/Subscriber Demo - User: "+user);
         frame.setSize(300, 300);
         frame.addWindowListener(new CloseWindowHandler());
 
@@ -61,15 +63,13 @@ public class SwingClient {
         info_TextArea.setLineWrap(true);
         info_TextArea.setWrapStyleWord(true);
 
-        JButton show_topics_button = new JButton("Show Topics");
+        JButton show_topics_button = new JButton("Topics");
         JButton new_publisher_button = new JButton("New Publisher");
         JButton new_subscriber_button = new JButton("New Subscriber");
         JButton to_unsubscribe_button = new JButton("Unsubscribe");
-        JButton to_post_an_event_button = new JButton("Post Event");
-        JButton forward_message_button = new JButton("Forward Message");
-        JButton to_close_the_app = new JButton("Close App");
-        JButton clear_info_button = new JButton("Clear Info"); // Clear Information
-        JButton clear_messages_button = new JButton("Clear Messages"); // Clear Messages
+        JButton to_post_an_event_button = new JButton("Post an Event");
+        JButton forward_message_button = new JButton("Forward");
+        JButton to_close_the_app = new JButton("Close");
         JButton delete_publisher_button = new JButton("Delete Publisher");
 
         show_topics_button.addActionListener(new showTopicsHandler());
@@ -80,20 +80,6 @@ public class SwingClient {
         forward_message_button.addActionListener(new ForwardMessageHandler());
         to_close_the_app.addActionListener(new CloseAppHandler());
         delete_publisher_button.addActionListener(new DeletePublisherHandler());
-
-        clear_info_button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                info_TextArea.setText("");
-            }
-        });
-
-        clear_messages_button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                messages_TextArea.setText("");
-            }
-        });
 
         publisherComboBox = new JComboBox<Topic>();
         publisherComboBox.addActionListener(new ActionListener() {
@@ -124,26 +110,24 @@ public class SwingClient {
         topicsP.add(new JScrollPane(my_subscriptions_TextArea));
         topicsP.add(new JLabel("I'm Publisher of topics:"));
         topicsP.add(publisherComboBox);
-        topicsP.add(delete_publisher_button); // Add the Delete button here
+        topicsP.add(delete_publisher_button);
 
         // Information Panel
         JPanel infoPanel = new JPanel();
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.PAGE_AXIS));
-        infoPanel.add(new JLabel("Information:"));
+        infoPanel.add(new JLabel("Debug:"));
         infoPanel.add(new JScrollPane(info_TextArea));
-        infoPanel.add(clear_info_button); // Add Clear Info Button
 
         // Messages Panel
         JPanel messagesPanel = new JPanel();
         messagesPanel.setLayout(new BoxLayout(messagesPanel, BoxLayout.PAGE_AXIS));
         messagesPanel.add(new JLabel("Messages:"));
         messagesPanel.add(new JScrollPane(messages_TextArea));
-        messagesPanel.add(clear_messages_button); // Add Clear Messages Button
 
         // SplitPane for Columns
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, infoPanel, messagesPanel);
-        splitPane.setDividerLocation(150); // Initial division point
-        splitPane.setResizeWeight(0.3); // Allocate 30% of space to the info panel
+        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, infoPanel, messagesPanel);
+        splitPane.setDividerLocation(100); // Initial division point
+        //splitPane.setResizeWeight(0.15); // Allocate 30% of space to the info panel
 
         Container mainPanel = frame.getContentPane();
         mainPanel.add(buttonsPannel, BorderLayout.PAGE_START);
@@ -162,12 +146,7 @@ public class SwingClient {
             List<Topic> topicsList = topicManager.topics();
 
             if (topicsList == null) {
-                topic_list_TextArea.append("No topics available.\n");
-            }
-
-            // Ahora puedes trabajar con 'topicsList' como una lista
-            for (Topic topic : topicsList) {
-                System.out.println(topic);
+                topic_list_TextArea.append("No topics yet.\n");
             }
 
             // Limpiar el área de texto antes de agregar los nuevos datos
@@ -309,7 +288,7 @@ public class SwingClient {
             Message message = new Message(publisherTopic, content);
 
             if (publisher.publish(message)) {
-                messages_TextArea.append("Message posted to topic '" + publisherTopic.name + "': " + content + "\n");
+                messages_TextArea.append("Message posted on topic '" + publisherTopic.name + "': " + content + "\n");
             } else {
                 info_TextArea.append("Error while trying to post.\n");
             }
@@ -321,7 +300,7 @@ public class SwingClient {
 
         public void actionPerformed(ActionEvent e) {
             if (publisherTopic == null) {
-                info_TextArea.append("Error: No topic selected for publishing.\n");
+                info_TextArea.append("Error: No topic selected.\n");
                 return;
             }
 
@@ -415,9 +394,6 @@ public class SwingClient {
         }
 
         public void windowClosing(WindowEvent e) {
-
-            //...
-            System.out.println("one user closed");
         }
     }
 }

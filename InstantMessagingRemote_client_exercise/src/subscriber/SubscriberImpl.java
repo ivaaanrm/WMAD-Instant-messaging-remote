@@ -43,11 +43,6 @@ public class SubscriberImpl implements Subscriber {
     }
 
     public void onMessage(Message message) {
-        for (Topic t : my_publishers.keySet()) {
-            if (!t.name.contentEquals(message.topic.name)) {
-                System.out.print(t.name + " "+ message.topic.name);
-                messages_TextArea.append(message.topic.name + ": " + message.content + "\n");
-            }
-        }
+        messages_TextArea.append(message.topic.name + ": " + message.content + "\n");
     }
 }
