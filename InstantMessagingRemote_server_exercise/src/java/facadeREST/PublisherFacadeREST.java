@@ -29,7 +29,6 @@ public class PublisherFacadeREST {
   @Produces({"application/xml", "application/json"})
   public void publish(Message message) {
     Publisher publisher = global.getTopicManager().publisher(message.topic);
-    System.out.print(message);
     publisher.publish(message);
   }
 

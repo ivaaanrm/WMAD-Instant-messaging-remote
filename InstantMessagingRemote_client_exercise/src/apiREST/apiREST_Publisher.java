@@ -20,16 +20,9 @@ public class apiREST_Publisher {
 
       PrintWriter out = new PrintWriter(ucon.getOutputStream(), true);
       String json = new Gson().toJson(message);
-      System.out.println("publish: "+json);
       out.println(json);
       out.flush();
       ucon.connect();
-
-      BufferedReader in = new BufferedReader(new InputStreamReader(ucon.getInputStream()));
-      String line;
-      while ((line = in.readLine()) != null) {
-        System.out.println(line);
-      }
       return true;
     } catch (Exception e) {
       e.printStackTrace();

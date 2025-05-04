@@ -57,7 +57,6 @@ public class PublisherImpl implements Publisher {
   @Override
   public void publish(Message message) {
     for (Subscriber subscriber : subscriberSet) {
-        System.out.print(message);
         subscriber.onMessage(message);
     }
   }

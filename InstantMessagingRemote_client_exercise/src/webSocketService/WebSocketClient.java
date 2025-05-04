@@ -77,7 +77,6 @@ public class WebSocketClient {
   @OnMessage
   public void onMessage(String json) {
     try { 
-      // Intentamos deserializar el mensaje como un Subscription_close 
       Gson gson = new Gson(); 
       Subscription_close subs_close = gson.fromJson(json, Subscription_close.class); 
        
